@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Kick the Buddy</title>
 
-  <!-- Official stable Ruffle CDN -->
+  <!-- ✅ Stable Ruffle CDN -->
   <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 
   <style>
@@ -14,11 +14,15 @@
       margin: 0;
       background: black;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
     #game-container {
+      flex: 1; /* fill remaining space */
       width: 100%;
       height: 100%;
+      position: relative;
     }
 
     canvas {
@@ -26,42 +30,86 @@
       height: 100% !important;
       display: block;
     }
+
+    #reset-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 10;
+      padding: 6px 12px;
+      font-size: 14px;
+      background: #5865F2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      opacity: 0.8;
+    }
+
+    #reset-btn:hover {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
 
-  <div id="game-container"></div>
+  <div id="game-container">
+    <button id="reset-btn">Reset Game</button>
+  </div>
 
   <script>
+    // Track if Activity session is running
+    window.activityRunning = false;
+
     const container = document.getElementById("game-container");
 
     function startRuffle() {
+      // If already running, just focus
+      if (window.activityRunning) {
+        container.scrollIntoView({ behavior: "smooth" });
+        return;
+      }
+
+      // Initialize Ruffle
       const ruffle = window.RufflePlayer.newest();
       const player = ruffle.createPlayer();
 
+      // Clear container and append player
       container.innerHTML = "";
       container.appendChild(player);
 
+      // Fullscreen scaling
       player.style.width = "100%";
       player.style.height = "100%";
       player.fit = "scale";
 
+      // Keyboard focus
       player.tabIndex = 1;
       player.focus();
 
+      // Load SWF (must be in repo root)
       player.load("buddy.swf");
 
-      // Required for Discord + Chrome audio policies
+      // Audio resume for Discord + Chrome policies
       document.addEventListener("click", () => {
         if (player.audio_context?.state === "suspended") {
           player.audio_context.resume();
         }
       });
+
+      // Mark session as running
+      window.activityRunning = true;
     }
 
-    // 🔑 Delay startup so Discord iframe has size
+    // Delayed startup for Discord iframe sizing
     requestAnimationFrame(() => {
       setTimeout(startRuffle, 150);
+    });
+
+    // Reset button to restart SWF internally (no Discord message)
+    document.getElementById("reset-btn").addEventListener("click", () => {
+      container.innerHTML = "";
+      startRuffle();
     });
   </script>
 
