@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Kick the Buddy</title>
 
-  <!-- ✅ Stable Ruffle CDN -->
+  <!-- Official stable Ruffle CDN -->
   <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 
   <style>
@@ -31,6 +31,10 @@
       display: block;
     }
 
+    /* ===============================
+       RESET BUTTON OPTION (optional)
+       Remove this block to disable reset
+    ================================ */
     #reset-btn {
       position: absolute;
       top: 10px;
@@ -49,33 +53,37 @@
     #reset-btn:hover {
       opacity: 1;
     }
+    /* END RESET BUTTON OPTION */
   </style>
 </head>
 <body>
 
-  <div id="game-container">
-    <button id="reset-btn">Reset Game</button>
-  </div>
+  <div id="game-container"></div>
+
+  <!-- ===============================
+       RESET BUTTON OPTION (optional)
+       Remove this block to disable reset
+  ================================ -->
+  <button id="reset-btn">Reset Game</button>
+  <!-- END RESET BUTTON OPTION -->
 
   <script>
-    // Track if Activity session is running
-    window.activityRunning = false;
-
     const container = document.getElementById("game-container");
 
+    // Global player reference to keep one instance
+    let player;
+    let ruffle;
+
     function startRuffle() {
-      // If already running, just focus
-      if (window.activityRunning) {
-        container.scrollIntoView({ behavior: "smooth" });
+      // If player already exists, just reload the SWF internally
+      if (player) {
+        player.load("buddy.swf");
         return;
       }
 
-      // Initialize Ruffle
-      const ruffle = window.RufflePlayer.newest();
-      const player = ruffle.createPlayer();
+      ruffle = window.RufflePlayer.newest();
+      player = ruffle.createPlayer();
 
-      // Clear container and append player
-      container.innerHTML = "";
       container.appendChild(player);
 
       // Fullscreen scaling
@@ -87,7 +95,7 @@
       player.tabIndex = 1;
       player.focus();
 
-      // Load SWF (must be in repo root)
+      // Load SWF
       player.load("buddy.swf");
 
       // Audio resume for Discord + Chrome policies
@@ -96,21 +104,22 @@
           player.audio_context.resume();
         }
       });
-
-      // Mark session as running
-      window.activityRunning = true;
     }
 
-    // Delayed startup for Discord iframe sizing
+    // Delayed startup so Discord iframe has size
     requestAnimationFrame(() => {
       setTimeout(startRuffle, 150);
     });
 
-    // Reset button to restart SWF internally (no Discord message)
+    // ===============================
+    // RESET BUTTON FUNCTIONALITY (optional)
+    // Remove this block to disable reset
+    // ===============================
     document.getElementById("reset-btn").addEventListener("click", () => {
-      container.innerHTML = "";
-      startRuffle();
+      if (player) player.load("buddy.swf");
     });
+    // END RESET BUTTON FUNCTIONALITY
+
   </script>
 
 </body>
