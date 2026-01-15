@@ -33,14 +33,6 @@
   </div>
 
   <script>
-    // ========================
-    // Initialize Ruffle with custom WASM files
-    // ========================
-    const ruffle = window.RufflePlayer.newest({
-      wasm_path: "ruffle/9486308dfe0bc620597f.wasm",      // your main WASM
-      wasm_asm_path: "ruffle/cf3b78b6b1b32c6a9b87.wasm"   // your asm fallback
-    });
-
     const player = ruffle.createPlayer();
     const container = document.getElementById("game-container");
     container.appendChild(player);
@@ -68,4 +60,5 @@
   </script>
 </body>
 </html>
+
 
