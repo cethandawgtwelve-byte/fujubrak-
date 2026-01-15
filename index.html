@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dominic Fike - Kick the Buddy</title>
+  <!-- Load the self-hosted Ruffle JavaScript -->
+  <script src="ruffle/ruffle.js"></script>
+  <style>
+    /* Make the game fill the page and remove scrollbars */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      overflow: hidden;
+    }
+    #game-container {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <!-- This div is where Ruffle will render your SWF -->
+  <div id="game-container"></div>
+
+  <script>
+    // Initialize Ruffle
+    const ruffle = window.RufflePlayer.newest();
+    const player = ruffle.createPlayer();
+    document.getElementById("game-container").appendChild(player);
+
+    // Load your SWF (named buddy.swf)
+    player.load("buddy.swf");
+  </script>
+</body>
+</html>
