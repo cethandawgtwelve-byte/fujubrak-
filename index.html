@@ -4,10 +4,8 @@
   <meta charset="UTF-8">
   <title>Dominic Fike - Kick the Buddy</title>
 
-  <!-- Self-hosted Ruffle -->
+  <!-- Self-hosted Ruffle JS -->
   <script src="ruffle/ruffle.js"></script>
-
-  <!-- Discord SDK (commented out for local testing) -->
 
   <style>
     /* Fullscreen for HTML, body, and containers */
@@ -29,23 +27,20 @@
   </style>
 </head>
 <body>
-  <!-- Discord SDK wrapper -->
+  <!-- Discord wrapper optional -->
   <div id="discord-app-container">
-    <!-- Ruffle renders the SWF here -->
     <div id="game-container"></div>
   </div>
 
   <script>
     // ========================
-    // Discord SDK (commented out locally)
+    // Initialize Ruffle with custom WASM files
     // ========================
-    // const client = new Discord.Client();
-    // client.initialize();
+    const ruffle = window.RufflePlayer.newest({
+      wasm_path: "ruffle/c7e6a88989fc130dfbcf.wasm",      // your main WASM
+      wasm_asm_path: "ruffle/4065c68d6800df78f899.wasm"   // your asm fallback
+    });
 
-    // ========================
-    // Initialize Ruffle
-    // ========================
-    const ruffle = window.RufflePlayer.newest();
     const player = ruffle.createPlayer();
     const container = document.getElementById("game-container");
     container.appendChild(player);
@@ -60,10 +55,11 @@
     player.focus();
 
     // ========================
-    // Auto loads SWF immediately
+    // Load SWF
     // ========================
     player.load("buddy.swf");
-    // resume audio on first click for autoplay warning
+
+    // Resume audio on first click (Chrome autoplay)
     document.addEventListener("click", () => {
       if (player.audio_context && player.audio_context.state === "suspended") {
         player.audio_context.resume();
