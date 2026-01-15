@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Kick the Buddy</title>
 
-  <!-- ✅ Stable Ruffle CDN build -->
+  <!-- Official stable Ruffle CDN -->
   <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 
   <style>
@@ -33,30 +33,35 @@
   <div id="game-container"></div>
 
   <script>
-    // Create Ruffle player
-    const ruffle = window.RufflePlayer.newest();
-    const player = ruffle.createPlayer();
-
     const container = document.getElementById("game-container");
-    container.appendChild(player);
 
-    // Fullscreen scaling
-    player.style.width = "100%";
-    player.style.height = "100%";
-    player.fit = "scale";
+    function startRuffle() {
+      const ruffle = window.RufflePlayer.newest();
+      const player = ruffle.createPlayer();
 
-    // Keyboard focus
-    player.tabIndex = 1;
-    player.focus();
+      container.innerHTML = "";
+      container.appendChild(player);
 
-    // Load SWF (must be in repo root)
-    player.load("buddy.swf");
+      player.style.width = "100%";
+      player.style.height = "100%";
+      player.fit = "scale";
 
-    // Fix browser audio autoplay restriction
-    document.addEventListener("click", () => {
-      if (player.audio_context?.state === "suspended") {
-        player.audio_context.resume();
-      }
+      player.tabIndex = 1;
+      player.focus();
+
+      player.load("buddy.swf");
+
+      // Required for Discord + Chrome audio policies
+      document.addEventListener("click", () => {
+        if (player.audio_context?.state === "suspended") {
+          player.audio_context.resume();
+        }
+      });
+    }
+
+    // 🔑 Delay startup so Discord iframe has size
+    requestAnimationFrame(() => {
+      setTimeout(startRuffle, 150);
     });
   </script>
 
