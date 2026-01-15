@@ -2,63 +2,63 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dominic Fike - Kick the Buddy</title>
+  <title>Kick the Buddy</title>
 
-  <!-- Self-hosted Ruffle JS -->
-  <script src="ruffle/ruffle.js"></script>
+  <!-- Stable Ruffle CDN build -->
+  <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 
   <style>
-    /* Fullscreen for HTML, body, and containers */
-    html, body, #discord-app-container, #game-container {
+    html, body {
       width: 100%;
       height: 100%;
       margin: 0;
-      padding: 0;
       background: black;
       overflow: hidden;
     }
 
-    /* Canvas scaling */
+    #game-container {
+      width: 100%;
+      height: 100%;
+    }
+
     canvas {
-      display: block !important;
       width: 100% !important;
       height: 100% !important;
+      display: block;
     }
   </style>
 </head>
 <body>
-  <!-- Discord wrapper optional -->
-  <div id="discord-app-container">
-    <div id="game-container"></div>
-  </div>
+
+  <div id="game-container"></div>
 
   <script>
+    // Create Ruffle player
+    const ruffle = window.RufflePlayer.newest();
     const player = ruffle.createPlayer();
+
     const container = document.getElementById("game-container");
     container.appendChild(player);
 
-    // Force canvas scaling
+    // Fullscreen scaling
     player.style.width = "100%";
     player.style.height = "100%";
     player.fit = "scale";
 
-    // Ensure canvas can receive keyboard input
+    // Keyboard focus
     player.tabIndex = 1;
     player.focus();
 
-    // ========================
-    // Load SWF
-    // ========================
+    // Load SWF (must be in repo root)
     player.load("buddy.swf");
 
-    // Resume audio on first click (Chrome autoplay)
+    // Fix browser audio autoplay restriction
     document.addEventListener("click", () => {
-      if (player.audio_context && player.audio_context.state === "suspended") {
+      if (player.audio_context?.state === "suspended") {
         player.audio_context.resume();
       }
     });
   </script>
+
 </body>
 </html>
-
-
