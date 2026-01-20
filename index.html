@@ -37,24 +37,24 @@
 
     function startGame() {
       const ruffle = window.RufflePlayer.newest();
-      const player = ruffle.createPlayer();
+      const plyr = ruffle.createPlayer();
 
       container.innerHTML = "";
-      container.appendChild(player);
+      container.appendChild(plyr);
 
-      player.style.width = "100%";
-      player.style.height = "100%";
-      player.fit = "scale";
+      plyr.style.width = "100%";
+      plyr.style.height = "100%";
+      plyr.fit = "scale";
 
-      player.tabIndex = 1;
-      player.focus();
+      plyr.tabIndex = 1;
+      plyr.focus();
 
-      player.load("buddy.swf");
+      plyr.load("buddy.swf");
 
       // Audio unlock for Discord + Chrome
       document.addEventListener("click", () => {
-        if (player.audio_context?.state === "suspended") {
-          player.audio_context.resume();
+        if (plyr.audio_context?.state === "suspended") {
+          plyr.audio_context.resume();
         }
       });
     }
@@ -65,3 +65,4 @@
 
 </body>
 </html>
+
